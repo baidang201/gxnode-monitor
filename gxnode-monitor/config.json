@@ -1,0 +1,15 @@
+{
+  "witness_id": "gxcchainclub",
+  "wallet_passwd": "12345678",
+  "produce_public_keys": [
+    "GXC5xZCCq2QHctJtW8i7mZZxbrnHYQqmPN9cuGEc3KwyeijzipGJg",
+    "GXC86wYZCQqU2Z4gyoauTuQuVKHUfkhGZyjZf3bJqKQMTE2NjMHbj"
+  ],
+  "miss_block_interval": 360,
+  "warn_miss_block_count": 2,
+  "switch_miss_block_count": 4,
+  "cli_wallet_path": "/Users/wjfree/cli_wallet",
+  "wallet_file_path": "/Users/wjfree/",
+  "api_url": "https://testnet.gxchain.org/rpc",
+  "wss_url": "wss://testnet.gxchain.org"
+}
