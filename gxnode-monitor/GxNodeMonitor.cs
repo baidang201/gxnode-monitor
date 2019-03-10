@@ -31,24 +31,32 @@ namespace gxnode_monitor
 
             do
             {
-                Console.WriteLine("Checking node " + config.witness_id + " ......");
-                var r = gxChainApi.GetWitnessByAccount(accountId).Result;
-
-                //获取丢块数以及投票数量
-                NodeInfo node = new NodeInfo
+                try
                 {
-                    total_missed = r.total_missed,
-                    total_votes = ulong.Parse(r.total_votes)
-                };
+                    Console.WriteLine("\n\n正在检查节点：" + config.witness_id + " ......");
+                    var r = gxChainApi.GetWitnessByAccount(accountId).Result;
 
-                SavaNodeInfo(node);
+                    //获取丢块数以及投票数量
+                    NodeInfo node = new NodeInfo
+                    {
+                        total_missed = r.total_missed,
+                        total_votes = ulong.Parse(r.total_votes)
+                    };
 
-                CheckMissBlock(config.warn_miss_block_count, config.switch_miss_block_count);
+                    SavaNodeInfo(node);
 
-                Console.WriteLine("当前丢块数：\t" + node.total_missed + "\t当前投票数量：\t" + node.total_votes);
+                    CheckMissBlock(config.warn_miss_block_count, config.switch_miss_block_count);
 
-                Console.WriteLine("Now, Sleep " + interval + "s......");
-                Thread.Sleep(interval * 1000);
+                    Console.WriteLine("当前丢块数：\t" + node.total_missed + "\t当前投票数量：\t" + node.total_votes);
+
+                    Console.WriteLine("\n\n检查完毕，休息" + interval + "秒......");
+                    Thread.Sleep(interval * 1000);
+                }
+                catch (Exception e)
+                {
+                    //防止异常退出
+                    Console.WriteLine("！！！监控发生了错误，错误信息：" + e.Message + "!!!!");
+                }
 
             } while (true);
 
