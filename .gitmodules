@@ -1,3 +1,3 @@
 [submodule "gxchain-csharp-sdk"]
 	path = gxchain-csharp-sdk
-	url = git@github.com:wjfree/gxchain-csharp-sdk.git
+	url = https://github.com/wjfree/gxchain-csharp-sdk.git
