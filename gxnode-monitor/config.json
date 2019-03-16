@@ -11,5 +11,11 @@
   "cli_wallet_path": "/Users/wjfree/cli_wallet",
   "wallet_file_path": "/Users/wjfree/",
   "api_url": "https://testnet.gxchain.org/rpc",
-  "wss_url": "wss://testnet.gxchain.org"
+  "wss_url": "wss://testnet.gxchain.org",
+
+  "enable_node_switch": true,
+  "dingding_alarm_url": "https://oapi.dingtalk.com/robot/send?access_token=XXXX",
+
+  "enbable_vote_monitor": true,
+  "votes_alarm_count": 10000
 }

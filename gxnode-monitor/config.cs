@@ -19,6 +19,10 @@ namespace gxnode_monitor
         public string wallet_file_path { get; set; }
         public string api_url { get; set; }
         public string wss_url { get; set; }
+        public bool enable_node_switch { get; set; }
+        public string dingding_alarm_url { get; set; }
+        public bool enbable_vote_monitor { get; set; }
+        public ulong votes_alarm_count { get; set; }
 
         public static MonitorConfig LoadFromConfig(string configFilePath)
         {

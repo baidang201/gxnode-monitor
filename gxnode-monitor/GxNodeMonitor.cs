@@ -12,15 +12,17 @@ namespace gxnode_monitor
         static private MonitorConfig config;
         static GxChainApi gxChainApi;
         static string accountId;
+        static private IAlarm alarmer;
         const int interval = 60;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("********** Start Monitor ***********");
+            Console.WriteLine("********** 启动监控程序 ***********");
 
             config = MonitorConfig.LoadFromConfig("config.json");
 
             gxChainApi = new GxChainApi(config.api_url);
+            alarmer = new DingDingAlarm(config.dingding_alarm_url);
 
             //get account id from name
             accountId = gxChainApi.GetAccountByName(config.witness_id).Result.id;
@@ -46,6 +48,11 @@ namespace gxnode_monitor
                     SavaNodeInfo(node);
 
                     CheckMissBlock(config.warn_miss_block_count, config.switch_miss_block_count);
+
+                    if (config.enbable_vote_monitor)
+                    {
+                        CheckVoteChange(config.votes_alarm_count * 100000);
+                    }
 
                     Console.WriteLine("当前丢块数：\t" + node.total_missed + "\t当前投票数量：\t" + node.total_votes);
 
@@ -101,28 +108,37 @@ namespace gxnode_monitor
             if (nodeLast.total_missed - nodeFirst.total_missed >= warnlimit &&
                 nodeLast.total_missed - nodeFirst.total_missed < switchlimit)
             {
-                Warning();
+                Warning("警告：您的节点【" + config.witness_id + "】在【" + config.miss_block_interval + "】秒内丢块【" + (nodeLast.total_missed - nodeFirst.total_missed) + "】块，请及时处理！");
             }
-            if (nodeLast.total_missed - nodeFirst.total_missed >= switchlimit)
+            if (nodeLast.total_missed - nodeFirst.total_missed >= switchlimit && config.enable_node_switch)
             {
+                Warning("警告：您的节点【" + config.witness_id + "】在【" + config.miss_block_interval + "】秒内丢块【" + (nodeLast.total_missed - nodeFirst.total_missed) + "】块，正在启动节点切换过程！");
+
                 bool rz = SwitchProduceKey();
                 if (rz)
                 {
                     //清除监控记录重新监控
                     nodeInfos.Clear();
                 }
-                else
-                {
-                    //do nothing. CheckMissBlock atcion will be triggered next minute.
-                }
+            }
+        }
+
+        static private void CheckVoteChange(ulong alarmLimit)
+        {
+            var nodeLast = nodeInfos[nodeInfos.Count - 1];
+            var nodeFirst = nodeInfos[0];
+
+            if ( nodeFirst.total_votes - nodeLast.total_votes >= alarmLimit)
+            {
+                Warning("警告：您的节点【" + config.witness_id + "】在当前投票更新期投票减少【" + (nodeFirst.total_votes - nodeLast.total_votes)/100000 + "】票，请及时处理！");
             }
         }
 
 
-        static private void Warning()
+        static private void Warning(string msg)
         {
-            Console.WriteLine("Warning！！！！！");
-
+            Console.WriteLine(msg);
+            alarmer.Alarm(AlarmLevel.info, msg);
         }
 
         static private bool SwitchProduceKey()
@@ -130,6 +146,7 @@ namespace gxnode_monitor
             //打开钱包
             //切换密钥
             Console.WriteLine("启动切换密钥过程，更换节点");
+
 
             var CurrentProduceKey = gxChainApi.GetWitnessByAccount(accountId).Result.signing_key;
 
@@ -158,6 +175,7 @@ namespace gxnode_monitor
                 if (CurrentProduceKey.Equals(gxChainApi.GetWitnessByAccount(accountId).Result.signing_key))
                 {
                     Console.WriteLine("切换成功，当前签名密钥为：\t\t" + CurrentProduceKey);
+                    Warning("通知：您的节点【" + config.witness_id + "】出块密钥已经成功切换为：【"+ CurrentProduceKey + "】请密切关注出块情况！");
 
                     return true;
                 }
@@ -165,6 +183,7 @@ namespace gxnode_monitor
             }
 
             Console.WriteLine("切换失败，当前签名密钥为：\t\t" + gxChainApi.GetWitnessByAccount(accountId).Result.signing_key);
+            alarmer.Alarm(AlarmLevel.error, "警告：您的节点【" + config.witness_id + "】出块密钥切换失败，请及时处理！！");
 
             return false;
         }
