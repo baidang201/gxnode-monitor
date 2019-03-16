@@ -12,4 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\gxchain-csharp-sdk\gxchain-csharp-sdk.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="nodeRecode.csv" />
+  </ItemGroup>
 </Project>

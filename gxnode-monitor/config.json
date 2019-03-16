@@ -14,7 +14,7 @@
   "wss_url": "wss://testnet.gxchain.org",
 
   "enable_node_switch": true,
-  "dingding_alarm_url": "https://oapi.dingtalk.com/robot/send?access_token=4104f5353e5143c369fb9631454a05fc35ff9037a9b5218362a6601975acf6ce",
+  "dingding_alarm_url": "https://oapi.dingtalk.com/robot/send?access_token=",
 
   "enbable_vote_monitor": true,
   "votes_alarm_count": 10000
