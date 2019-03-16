@@ -42,7 +42,7 @@ namespace gxnode_monitor
                     NodeInfo node = new NodeInfo
                     {
                         total_missed = r.total_missed,
-                        total_votes = ulong.Parse(r.total_votes)
+                        total_votes = long.Parse(r.total_votes)
                     };
 
                     SavaNodeInfo(node);
@@ -72,7 +72,7 @@ namespace gxnode_monitor
         private class NodeInfo
         {
             public int total_missed { get; set; }
-            public ulong total_votes { get; set; }
+            public long total_votes { get; set; }
 
             public override string ToString()
             {
@@ -123,7 +123,7 @@ namespace gxnode_monitor
             }
         }
 
-        static private void CheckVoteChange(ulong alarmLimit)
+        static private void CheckVoteChange(long alarmLimit)
         {
             var nodeLast = nodeInfos[nodeInfos.Count - 1];
             var nodeFirst = nodeInfos[0];

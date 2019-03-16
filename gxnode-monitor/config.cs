@@ -22,7 +22,7 @@ namespace gxnode_monitor
         public bool enable_node_switch { get; set; }
         public string dingding_alarm_url { get; set; }
         public bool enbable_vote_monitor { get; set; }
-        public ulong votes_alarm_count { get; set; }
+        public long votes_alarm_count { get; set; }
 
         public static MonitorConfig LoadFromConfig(string configFilePath)
         {
