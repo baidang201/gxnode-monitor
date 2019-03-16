@@ -76,7 +76,7 @@ namespace gxnode_monitor
 
             public override string ToString()
             {
-                return total_missed + "," + total_votes;
+                return DateTime.Now.ToString() + total_missed + "," + total_votes;
             }
         }
 
